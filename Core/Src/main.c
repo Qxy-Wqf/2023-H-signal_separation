@@ -55,7 +55,7 @@
 #define DA1_Value_Length 200 //DAC1(低频)点数
 #define DA2_Value_Length 200 //DAC2(高频)点数
 #define DAC_SIZE 200 //DAC点数
-#define FS 1000 //采样�?:KHz
+#define FS 1000 //采样:KHz
 #define FFT_CNT 1024 //fft点数
 #define ARRAY_LEN 200 //循环移位数组点数
 /* USER CODE END PV */
@@ -80,7 +80,7 @@ int cmp(const void* a,const void* b)
 /* USER CODE BEGIN 0 */
 arm_cfft_instance_f32 cfft_instance;
 
-// sin、cos、三角波打表，格式：DAC_SIZE为单频率点数，按序排放，�?10-100KHz十九个频�?
+// sin、cos、三角波打表，格式：DAC_SIZE为单频率点数，按序排放10-100KHz十九个
 short DAC_SIN[DAC_SIZE * 19] =
     // 第一行是10K -> 1s 10K
     {
@@ -167,9 +167,9 @@ double diff_phi_per5_1 = 0;
 double diff_phi_per5_0 = 0;
 int change_phi = 0;
 
-double pos_angle[2]; //相位差计�?
+double pos_angle[2]; //相位差
 
-//用来补偿相位的延�?
+//用来补偿相位的变量
 int delayTime0;
 int delayTime1;
 
@@ -244,7 +244,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  	//初始�?
+	  	//初始
 	    wave_type[0] = 0;
 	    wave_type[1] = 0;
 
@@ -258,7 +258,7 @@ int main(void)
 
 	    cal_2frqs(fre); //计算频率
 	    fft_cal_2types(fre, wave_type); //计算波形
-//	    HAL_UART_Transmit(&huart1, fre, 2, 100); //debug�?
+//	    HAL_UART_Transmit(&huart1, fre, 2, 100); //debug
 
 	    diff_phi_per5_1 = 1166.666666 / (fre[1] * 5 + 10);
 	    diff_phi_per5_0 = 1166.666666 / (fre[0] * 5 + 10);
@@ -324,7 +324,7 @@ int main(void)
 	    	    	DA1_temp[i] = (wave_type[0] == 0) ? DAC_SIN[fre[0]*DAC_SIZE + i] : Tri_Wave[fre[0]*DAC_SIZE + i];
 	    	    }
 	    	}
-	      //发挥部分待修改，但相移原理同�?
+	      //发挥部分待修改，但相移原理同上
 	      else {  // 拓展部分
 	        int t = (double)change_phi / 360.0 * (1000.0 / (fre[1] * 2.0 + 10.0)) * 29.71;
 	        if (change_phi != 0) {
@@ -397,9 +397,9 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 /**
- * @brief 循环平移�?个长度为ARRAY_LEN的数�?
+ * @brief 循环平移长度为ARRAY_LEN的数组
  * @param arr 待平移的数组
- * @param shift 平移的位数，正�?�表示右移，负�?�表示左�?
+ * @param shift 平移的位数，正表示右移，负表示左移
  */
 void circular_shift(uint16_t* arr, int16_t shift)
 {
@@ -409,7 +409,7 @@ void circular_shift(uint16_t* arr, int16_t shift)
     // 防止大于数组长度
     shift = shift % ARRAY_LEN;
 
-    // 若为负，统一转换为右�?
+    // 若为负，统一转换为右移
     if (shift < 0) {
         shift = ARRAY_LEN + shift;  // e.g., shift = -3 -> shift = 197
     }
@@ -431,7 +431,7 @@ double corr1000_200(short *data, short *mask)
     float res = 0;
     short i;
     for (i = 0; i < 1000; i++)
-        res = res + (data[i] - 2048) * (mask[i % DAC_SIZE] - 2048); // 注意SIN与COS模版要减去直流偏置，才是真正的信号幅�?
+        res = res + (data[i] - 2048) * (mask[i % DAC_SIZE] - 2048); // 注意SIN与COS模版要减去直流偏置，才是真正的信号幅度
     return res;
 }
 
